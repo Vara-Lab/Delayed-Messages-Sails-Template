@@ -1,0 +1,66 @@
+type GasReservationEvents = enum {
+  DeletedExpiredGasReservations,
+  ReservationsIds: vec u64,
+  ExpiredReservationsIds: vec u64,
+  GasReservationsChecked,
+  GasUnreserved: u64,
+  GasReserved,
+  Error: GasReservationError,
+};
+
+type GasReservationError = enum {
+  NoReservationIdsToUnreserve,
+  UnableToUnreserveGas,
+  ErrorWhileDoingReservation,
+  GasReservationIdOverflow,
+  GasReservationIsExpired: ReservationId,
+  NoGasReservationsInContract,
+};
+
+type ReservationId = struct {
+  [u8, 32],
+};
+
+type GasReservationData = struct {
+  reservation_id: u64,
+  expire_at_block: u32,
+};
+
+type MiniTamagotchiEvents = enum {
+  MessageDelayedSend,
+  NoReservationIdsToUnreserve,
+  OnlyContractCanSendThisMessage,
+  TamagotchiName: str,
+  TamagotchiNameChanged,
+  TamagotchiStopPlaying,
+  TamagotchiAteSomething,
+  TamagotchiIsPlaying,
+  TamagotchiIsNotPlaying,
+  TamagotchiIsHungry,
+  TamagotchiIsNotHungry,
+};
+
+constructor {
+  New : (tamagotchi_name: opt str);
+};
+
+service ContractGasReservation {
+  ReserveGas : (amount: u64, duration_in_blocks: u32) -> GasReservationEvents;
+  UnreserveGas : (reservation_id: u64) -> GasReservationEvents;
+  UpdateReservationsIdIfExpired : () -> GasReservationEvents;
+  query ExpiredReservationsId : () -> GasReservationEvents;
+  query GasReservationsData : () -> vec GasReservationData;
+  query ReservationsId : () -> GasReservationEvents;
+};
+
+service MiniTamagotchi {
+  ChangeName : (name: str) -> MiniTamagotchiEvents;
+  FeedTamagotchi : () -> MiniTamagotchiEvents;
+  SendTamagotchiToPlay : () -> MiniTamagotchiEvents;
+  SetTamagotchiIsHungry : () -> MiniTamagotchiEvents;
+  StopPlaying : () -> MiniTamagotchiEvents;
+  query TamagotchiIsHungry : () -> MiniTamagotchiEvents;
+  query TamagotchiIsPlaying : () -> MiniTamagotchiEvents;
+  query TamagotchiName : () -> MiniTamagotchiEvents;
+};
+
