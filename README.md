@@ -41,7 +41,7 @@ Sending a delayed message to the contract itself is a little tricky action, beca
 
 To achieve this, the following steps must be followed:
 
-> **Note**: You need to use the "ContractGasReservationsService" service that is in this contract to handle gas reservations, and before sending a message late, you must reserve gas so that it can be sent.
+> **Note**: You need to use the "ContractGasReservationsService" service that is in this contract to handle gas reservations, and before sending a delayed message, you must reserve gas so that it can be sent.
 
 1. You need to "describe" your methods that the contract wwill use, including methods to be used for delayed messages. For delayed messages, you can only describe the method along with the data to return (You can change this later, it is necessary so that you can implement your contract logic along with the delayed messages), example:
 
